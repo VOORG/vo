@@ -13,117 +13,117 @@ var pop = Array.prototype.pop;
 /**
  * util API
  */
-function noop (){}
+function noop() {}
 
 // convert to String
-function _toString (val){
+function _toString(val) {
     return val == null ? '' : typeof val === 'object' ? JSON.stringify(val, null, 2) : String(val);
 }
 
 // convert to number
-function toNumber (val){
+function toNumber(val) {
     var n = parseFloat(val, 10);
     return (n || n === 0) ? n : val;
 }
 
 // extend
-function extend (object){
-    if(!isObject(object)){
+function extend(object) {
+    if (!isObject(object)) {
         return object;
     }
-    
+
     var size = arguments.length;
-    if(size === 0){
+    if (size === 0) {
         return blantObject;
     }
-    
-    if(size === 1){
+
+    if (size === 1) {
         return object;
     }
-    
-    var destination = arguments[0], source, key, i = 0;
-    
-    for(i = 1; i < size; i++){
+
+    var destination = arguments[0],
+        source, key, i = 0;
+
+    for (i = 1; i < size; i++) {
         source = arguments[i];
-        for(key in source){
+        for (key in source) {
             if (isObject(source[key])) {
                 extend(destination, source[key]);
-            }
-            else {
+            } else {
                 destination[key] = source[key];
             }
         }
     }
-    
+
     return destination;
 }
 
-function hasOwn (object, key){
+function hasOwn(object, key) {
     return isObject(object) && hasOwnProperty.call(object, key);
 }
 
-function isFunction (object){
+function isFunction(object) {
     return !isNull(object) && !isUndefined(object) && toString.call(object) === '[object Function]';
-} 
+}
 
-function isObject (object){
+function isObject(object) {
     return !isUndefined(object) && typeof object === 'object';
 }
 
-function isPlainObject(object){
+function isPlainObject(object) {
     return object && toString.call(object) === '[object Object]';
 }
 
-function isEmptyObject (object){
+function isEmptyObject(object) {
     var name;
-    for(name in object){
+    for (name in object) {
         return false;
     }
-    
+
     return true;
 }
 
-function isRegex (object) {
+function isRegex(object) {
     return toString.call(object) === '[object Regex]';
 }
 
-function isArray (object){
+function isArray(object) {
     return toString.call(object) === '[object Array]';
 }
 
-function isNumber (object) {
+function isNumber(object) {
     return !isNull(object) && !isUndefined(object) && toString.call(object) === '[object Number]';
 }
 
-function isNaN (object) {
+function isNaN(object) {
     return isNumber(object) && object !== +object;
 }
 
-function isNull (object){
+function isNull(object) {
     return object === null;
 }
 
-function isUndefined (object){
+function isUndefined(object) {
     return object === void(0);
 }
 
-function isBlooean (Object) {
+function isBlooean(Object) {
     return !isNull(object) && isUndefined(object) && toString.call(object) === '[object Blooean]';
 }
 
-function log (msg){
+function log(msg) {
     if (typeof console !== 'undefined') {
         console.log(msg);
     }
 }
 
-function error (msg){
+function error(msg) {
     if (typeof console !== 'undefined') {
         console.error(msg);
     }
 }
 
-function warn (msg){
+function warn(msg) {
     if (typeof console !== 'undefined') {
         console.warn(msg);
     }
@@ -132,9 +132,10 @@ function warn (msg){
 /**
  * cache
  */
-function cache (key) {
+function cache(key) {
     var cacheMap = {};
-    function cacheFn (key, value) {
+
+    function cacheFn(key, value) {
         if (value) {
             cacheMap[key] = value;
         } else {
@@ -147,19 +148,19 @@ function cache (key) {
 /**
  * make function
  */
-function makeFunction (body) {
+function makeFunction(body) {
     var length = arguments.length;
-    if (length){
+    if (length) {
         var args;
         if (length > 1) {
             args = slice.call(arguments, 0, length - 1);
         }
         var fn;
         if (args) {
-            fn = new Function(args, arguments[length-1]);
+            fn = new Function(args, arguments[length - 1]);
         } else {
-            fn = new Function(arguments[length-1]);
-        }  
+            fn = new Function(arguments[length - 1]);
+        }
         return fn;
     }
 }
@@ -168,7 +169,7 @@ function makeFunction (body) {
  * $bind
  */
 function $bind(fn, ctx) {
-    function bindFn () {
+    function bindFn() {
         if (1 < arguments.length) {
             return fn.apply(ctx, arguments);
         } else {
@@ -181,33 +182,33 @@ function $bind(fn, ctx) {
 /**
  * defProperty
  */
-function defProperty (obj, key, value, propertyDescriptor) {
-    if(!propertyDescriptor) {
+function defProperty(obj, key, value, propertyDescriptor) {
+    if (!propertyDescriptor) {
         propertyDescriptor = {};
     }
     Object.defineProperty(obj, key, {
-		enumerable: propertyDescriptor.enumerable || true,
-		configurable: propertyDescriptor.configurable || true,
-		value: propertyDescriptor.value || value
-	});
+        enumerable: propertyDescriptor.enumerable || true,
+        configurable: propertyDescriptor.configurable || true,
+        value: propertyDescriptor.value || value
+    });
 }
 
 /**
  * DOM method
  */
-function query (el) {
+function query(el) {
     if (typeof el === 'string') {
-    var selector = el;
-    el = document.querySelector(el);
-    if (!el) {
-        warn('Cannot find element: ' + selector);
-        return document.createElement('div');
-    }
+        var selector = el;
+        el = document.querySelector(el);
+        if (!el) {
+            warn('Cannot find element: ' + selector);
+            return document.createElement('div');
+        }
     }
     return el;
 }
 
-function createElement (tagName){
+function createElement(tagName) {
     return document.createElement(tagName);
 }
 
@@ -218,73 +219,77 @@ var namespaceMap = {
     xhtml: 'http://www.w3.org/1999/xhtml'
 };
 
-function createElementNS (namespace, tagName){
+function createElementNS(namespace, tagName) {
     return document.createElementNS(namespaceMap[namespace], tagName)
 }
 
-function createTextNode (text){
+function createTextNode(text) {
     return document.createTextNode(text)
 }
 
-function createComment (text){
+function createComment(text) {
     return document.createComment(text)
 }
 
-function insertBefore (parentNode, newNode, referenceNode){
+function insertBefore(parentNode, newNode, referenceNode) {
     parentNode.insertBefore(newNode, referenceNode);
 }
 
-function removeChild (node, child){
+function removeChild(node, child) {
     node.removeChild(child);
 }
 
-function appendChild (node, child){
+function appendChild(node, child) {
     node.appendChild(child);
 }
 
-function parentNode (node){
+function parentNode(node) {
     return node.parentNode
 }
 
-function nextSibling (node){
+function nextSibling(node) {
     return node.nextSibling
 }
 
-function tagName (node){
+function tagName(node) {
     return node.tagName
 }
 
-function setTextContent (node, text){
+function setTextContent(node, text) {
     node.textContent = text;
 }
 
-function getAttribute (node, key) {
+function getAttribute(node, key) {
     return node.getAttribute(key);
 }
 
-function setAttribute (node, key, val){
+function setAttribute(node, key, val) {
     node.setAttribute(key, val);
 }
 
-function addEventListener (vo, node, eventType, listener) {
+function addEventListener(vo, node, eventType, listener) {
     node.addEventListener(eventType, vo.methods[listener]);
 }
 
-function isVoModelAttr (attrName) {
+function addEventListener$2(vo, node, eventType, listener) {
+    node.addEventListener(eventType, listener);
+}
+
+function isVoModelAttr(attrName) {
     return (attrName === constants.MODEL_ATTR);
 }
 
-function isVoEventAttrPrefix (attrName) {
+function isVoEventAttrPrefix(attrName) {
     return (-1 !== attrName.indexOf(constants.EVENT_ATTR_PREFIX));
 }
 
-function getVoEventType (attrName) {
+function getVoEventType(attrName) {
     return attrName.substring(constants.EVENT_ATTR_PREFIX.length);
 }
 
-function setAttributeWarpper (vo, node, attrName, attrValue) {
+function setAttributeWarpper(vo, node, attrName, attrValue) {
     var nodeName = node.nodeName;
-    switch(nodeName) {
+    switch (nodeName) {
         case "INPUT":
             handleModelAttr(vo, node, attrName, attrValue);
         case "BUTTON":
@@ -296,24 +301,24 @@ function setAttributeWarpper (vo, node, attrName, attrValue) {
     setAttribute(node, attrName, attrValue);
 }
 
-function trigger (node, type) {
+function trigger(node, type) {
     var event = document.createEvent("HTMLEvents");
     event.initEvent(type, true, true);
-    node.dispatchEvent(event);   
+    node.dispatchEvent(event);
 }
 
-function handleModelAttr (vo, node, attrName, attrValue) {
+function handleModelAttr(vo, node, attrName, attrValue) {
     if (isVoModelAttr(attrName)) {
-        var listener = $bind(function (attrValue) {
-            this[attrValue] = getAttribute(node, "value");
+        var listener = $bind(function(attrValue) {
+            this[attrValue] = node.value;
         }, vo);
-        addEventListener(vo, node, "input", function () {
+        addEventListener$2(vo, node, "input", function() {
             listener(attrValue);
         });
     }
 }
 
-function handleEventListener (vo, node, attrName, attrValue) {
+function handleEventListener(vo, node, attrName, attrValue) {
     if (isVoEventAttrPrefix(attrName)) {
         var eventType = getVoEventType(attrName);
         addEventListener(vo, node, eventType, attrValue)
@@ -328,7 +333,7 @@ module.exports = {
     blankObject: blankObject,
     toString: toString,
     hasOwnProperty: hasOwnProperty,
-    concat: concat, 
+    concat: concat,
     slice: slice,
     splice: splice,
     push: push,
@@ -362,7 +367,7 @@ module.exports = {
     createTextNode: createTextNode,
     createComment: createComment,
     insertBefore: insertBefore,
-    removeChild: removeChild,  
+    removeChild: removeChild,
     appendChild: appendChild,
     parentNode: parentNode,
     nextSibling: nextSibling,
