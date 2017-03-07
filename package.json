@@ -1,0 +1,20 @@
+{
+  "name": "vo",
+  "version": "1.0.0",
+  "description": "mvvm framework.",
+  "main": "vo.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "webpack"
+  ],
+  "author": "mawei",
+  "license": "MIT",
+  "devDependencies": {
+    "css-loader": "^0.21.0",
+    "gulp": "^3.9.1",
+    "style-loader": "^0.13.0",
+    "webpack": "^1.14.0"
+  }
+}
