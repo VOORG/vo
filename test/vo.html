@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-	<meta charset="UTF-8">
-	<title>vo</title>
-	<script src="../dist/vo.js" type="text/javascript"></script>
+    <meta charset="UTF-8">
+    <title>vo</title>
+    <script src="../dist/vo.js" type="text/javascript"></script>
 </head>
+
 <body>
-	<!--<div id="app">
+    <!--<div id="app">
 		{{ message }}
 	</div>
 	
@@ -28,33 +30,35 @@
 		</ol>
 	</div>-->
 
-	<div id="app-1"class="class-{{msg}}">
-		<h3>{{ message }}
-			<p>{{ message }} div {{ message }} {{ msg }}</p></h3>
-		<h3 vo-on:click="reverseMessage">Reverse Message</h3>
-		<input type="text" name="someText" vo-model="message"/>
-		<button vo-on:click="reverseMessage">Reverse Message</button>
-	</div>
+    <div id="app-1" class="class-{{msg}}">
+        <h3>{{ message }}
+            <p>{{ message }} div {{ message }} {{ msg }}</p>
+        </h3>
+        <h3 vo-on:click="reverseMessage">Reverse Message</h3>
+        <input type="text" name="someText" vo-model="message" />
+        <button vo-on:click="reverseMessage">Reverse Message</button>
+    </div>
 
-	<!--<div id="app-6">
+    <!--<div id="app-6">
 		<ol>
 			<todo-item v-for="item in groceryList" v-bind:todo="item"></todo-item>
 		</ol>
 	</div>-->
-	
-	<script type="text/javascript">
-		var vo = new Vo({
-			elem: '#app-1',
-			data: {
-				message: 'Hello Vo.js!',
-				msg: '--msg test--'
-			},
-			methods: {
-				reverseMessage: function () {
-					this.message = this.message.split('').reverse().join('');
-				}
-			}
-		});
-	</script>
+
+    <script type="text/javascript">
+        var vo = new Vo({
+            elem: '#app-1',
+            data: {
+                message: 'Hello Vo.js!',
+                msg: '--msg test--'
+            },
+            methods: {
+                reverseMessage: function() {
+                    this.message = this.message.split('').reverse().join('');
+                }
+            }
+        });
+    </script>
 </body>
+
 </html>
