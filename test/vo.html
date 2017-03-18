@@ -14,6 +14,9 @@
         <p>{{ someData.message }} div {{message  }} {{ msg }}</p>
 		<vo-if exp="{{show}}">
             <h3>this is vo-if</h3>
+            <vo-if exp="{{secondShow}}">
+                <h3>this is second vo-if</h3>
+		    </vo-if>
 		</vo-if>
     </div>
 
@@ -29,7 +32,8 @@
                         msg: "data--msg--"
                     }
                 },
-                show: true
+                show: true,
+                secondShow: true
             },
             methods: {
                 reverseMessage: function() {

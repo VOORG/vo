@@ -423,6 +423,14 @@
 
     /**
      * 
+     * @param {*} name 
+     */
+    function getDirectiveName (name) {
+        return name.substring(ATTR_PREFIX.length);
+    }
+
+    /**
+     * 
      * @param {*} attrName 
      */
     function isVoModelDirective (attrName) {
@@ -609,7 +617,7 @@
                 var currentAttr;
                 for (var i = 0, l = attributes.length; i < l; i++) {
                     currentAttr = attributes[i];
-                    handleNodeAttr(vo, nodeName, currentAttr, attrList);
+                    handleVNodeAttr(vo, nodeName, currentAttr, attrList);
                 }
             }
             return attrList;
@@ -622,7 +630,7 @@
          * @param {*} currentAttr 
          * @param {*} attrList 
          */
-        function handleNodeAttr (vo, nodeName, currentAttr, attrList) {
+        function handleVNodeAttr (vo, nodeName, currentAttr, attrList) {
             var attrName = currentAttr.nodeName;
             var attrObject = {
                 attrName: attrName,
@@ -683,8 +691,56 @@
             this.data = data;
             this.parentNode = parentNode;
             this.childNodes = childNodes;
-            this.dirty = false;
+            // this.dirty = false;
             this.operation = 0;
+            vNodeCtorHook(vo, this);
+        }
+
+        /**
+         * 
+         * @param {*} vo 
+         * @param {*} currentVNode 
+         * @param {*} nodeName 
+         * @param {*} attributeMap 
+         */
+        function vNodeCtorHook (vo, currentVNode) {
+            if (isVoDirective(currentVNode.nodeName.toLowerCase())) {
+                handleDirective$VNode(vo, currentVNode);
+            } else {
+
+            }
+        }
+
+        /**
+         * 
+         */
+        function handleDirective$VNode (vo, currentVNode) {
+            var directiveName = getDirectiveName(currentVNode.nodeName);
+            switch (directiveName) {
+                case "IF":
+                    handleIfDirective$VNode(vo, currentVNode);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        /**
+         * 
+         * @param {*} vo 
+         * @param {*} currentVNode 
+         * @param {*} attributeMap 
+         */
+        function handleIfDirective$VNode (vo, currentVNode) {
+            var templateFn;
+            if (currentVNode.attributeMap) {
+                templateFn = currentVNode.attributeMap[0]["templateFn"];
+            }
+            currentVNode.isDrective = true;
+            currentVNode.directive = {
+                directiveName: "IF",
+                exp: templateFn(vo)
+            }
         }
 
         /**
@@ -694,7 +750,7 @@
         function cloneVNode (vn) {
             var cloned;
             if (vn) {
-                var childrenNodes = vn.childNodes.slice();
+                var childNodes = vn.childNodes.slice();
                 var attributeMap = vn.attributeMap;
                 if (attributeMap) {
                     attributeMap = vn.attributeMap.slice();
@@ -780,16 +836,61 @@
             var nodeType = (oldVNode.nodeType === newVNode.nodeType) ? oldVNode.nodeType : 0;
             switch (nodeType) {
                 case 1:
-                    patchAttributes(vo, oldVNode, newVNode);
-                    patchChildren(vo, oldVNode, newVNode);
-                    break;
-                case 2:
+                    if (newVNode.isDrective) {
+                        patchDirective(vo, oldVNode, newVNode);
+                    } else {
+                        patchAttributes(vo, oldVNode, newVNode);
+                        patchChildren(vo, oldVNode, newVNode);
+                    }
                     break;
                 case 3:
                     patchTextContent(vo, oldVNode, newVNode);
                     break;
                 default: 
                     break;
+            }
+        }
+
+        /**
+         * 
+         * @param {*} vo 
+         * @param {*} oldVNode 
+         * @param {*} newVNode 
+         */
+        function patchDirective (vo, oldVNode, newVNode) {
+            var nodeName = newVNode.nodeName;
+            var directiveName = getDirectiveName(nodeName);
+            switch (directiveName) {
+                case "IF":
+                    patchDirective$If(vo, oldVNode, newVNode);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        /**
+         * 
+         * @param {*} vo 
+         * @param {*} oldVNode 
+         * @param {*} newVNode 
+         */
+        function patchDirective$If (vo, oldVNode, newVNode) {
+            var oldAttrMap = oldVNode.attributeMap;
+            var newAttrMap = newVNode.attributeMap;
+            var templateFn = newAttrMap[0]["templateFn"];
+            if (isFunction(templateFn)) {
+                var newAttrValue = templateFn(vo);
+                if (oldAttrMap[0]["attrValue"] !== newAttrValue) {
+                    oldAttrMap[0]["attrValue"] = newAttrValue;
+                    oldAttrMap[0]["templateFn"] = compiler.parse(vo, newVNode.nodeName, newAttrMap[0]["attrValue"]);
+                    var operation = newAttrValue === "true" ? 1 : -1;
+                    var newChildNodes = newVNode.childNodes;
+                    for (var i = 0, len = newChildNodes.length; i < len; i++) {
+                        newChildNodes[i]["operation"] = operation;
+                    }
+                    patchChildren(vo, oldVNode, newVNode);
+                }
             }
         }
 
@@ -826,9 +927,7 @@
          * @param {*} newVNode 
          */
         function patchChildren (vo, oldVNode, newVNode) {
-            var oldChildren = oldVNode.childNodes;
-            var newChildren = newVNode.childNodes;
-            updateChildren(vo, oldVNode.elemRef, oldChildren, newChildren);
+            updateChildren(vo, oldVNode, newVNode);
         }
 
         /**
@@ -837,7 +936,7 @@
          * @param {*} elemRef 
          */
         function removeElement (vo, elemRef) {
-            removeChild(utls.parentNode(elemRef), elemRef);
+            removeChild(parentNode(elemRef), elemRef);
         }
 
         /**
@@ -877,32 +976,35 @@
         /**
          * 
          * @param {*} vo 
-         * @param {*} elemRef 
-         * @param {*} oldChildren 
-         * @param {*} newChildren 
+         * @param {*} oldVNode 
+         * @param {*} newVNode 
          */
-        function updateChildren (vo, elemRef, oldChildren, newChildren) {
-            var currentNode;
+        function updateChildren (vo, oldVNode, newVNode) {
+            var oldChildren = oldVNode.childNodes;
+            var newChildren = newVNode.childNodes;
+            var currentVNode;
             var i = 0, lenI = newChildren.length;
             while (i < lenI) {
-                currentNode = newChildren[i];
-                switch (currentNode["operation"]) {
+                currentVNode = newChildren[i];
+                switch (currentVNode["operation"]) {
                     case 1: // add
-                        var clonedVNode = cloneVNode(currentNode);
-                        clonedVNode.parentNode = 
-                        cloneVNode.templateFn = compiler.parse(vo, newVNode.nodeName, newVNode.data);
-                        oldChildren.splice(i, 1, clonedVNode); 
-                        if (clonedVNode.nodeType === 1) {
-                            createElement(vo, clonedVNode.parentNode.elemRef, clonedVNode.nodeName, clonedVNode.attributeMap, clonedVNode.childNodes);               
-                        } else if (clonedVNode.nodeType === 3) {
-                            createTextNode(vo, clonedVNode.parentNode.elemRef, clonedVNode.data);
+                        // var clonedVNode = cloneVNode(currentVNode);
+                        // cloneVNode.parentNode = oldVNode;
+                        // cloneVNode.templateFn = compiler.parse(vo, newVNode.nodeName, newVNode.data);
+                        // oldChildren.splice(i, 1, clonedVNode); 
+                        // if (clonedVNode.nodeType === 1) {
+                        //     createElement(vo, clonedVNode.parentNode.elemRef, clonedVNode.nodeName, clonedVNode.attributeMap, clonedVNode.childNodes);               
+                        // } else if (clonedVNode.nodeType === 3) {
+                        //     createTextNode(vo, clonedVNode.parentNode.elemRef, clonedVNode.data);
+                        // }
+                        if (currentVNode.parentNode.isDrective) {
+                            updateDirective(vo, oldChildren[i], currentVNode);
+                        } else {
+
                         }
                         break;
                     case -1: // delete
-                        oldChildren.splice(i, 1);
-                        newChildren.splice(i, 1);
-                        lenI--;
-                        removeElement(newChildren[i]["elemRef"]);
+                        removeElement(vo, oldChildren[i]["elemRef"]);
                         break;
                     case 0: // normalUpdate
                         patchVNode(vo, oldChildren[i], newChildren[i]);
@@ -910,9 +1012,37 @@
                     default:
                         break;
                 }
-                currentNode["operation"] = 0;
+                currentVNode["operation"] = 0;
                 i++;
             }
+        }
+
+        /**
+         * 
+         * @param {*} vo 
+         * @param {*} oldVNode 
+         * @param {*} newVNode 
+         */
+        function updateDirective (vo, oldVNode, newVNode) {
+            var nodeName = newVNode.parentNode.nodeName;
+            var directiveName = getDirectiveName(nodeName);
+            switch (directiveName) {
+                case "IF":
+                    updateDirective$If(vo, oldVNode, newVNode);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        /**
+         * 
+         * @param {*} vo 
+         * @param {*} oldVNode 
+         * @param {*} newVNode 
+         */
+        function updateDirective$If (vo, oldVNode, newVNode) {
+            
         }
 
         /**
@@ -1042,7 +1172,6 @@
          * @param {*} vo 
          */
         function beforeRenderDOM (vo) {
-            // vo.$observer.publish(vo);
             compiler.compile$1(vo);
         }
 
@@ -1099,23 +1228,14 @@
          * @param {*} node 
          */
         function renderElement (vo, parentNode, node) {
-            var elemNode = createElement(node.nodeName);
+            var nodeName = node.nodeName;
+            var elemNode = createElement(nodeName);
             renderAttribute(vo, elemNode, node.attributeMap);
             if (parentNode) {
                 appendChild(parentNode, elemNode);
             }
             node.elemRef = elemNode;
             return elemNode;
-        }
-
-        /**
-         * 
-         * @param {*} vo 
-         * @param {*} parentNode 
-         * @param {*} node 
-         */
-        function renderDirective$If (vo, parentNode, node) {
-            
         }
 
         /**
@@ -1146,15 +1266,56 @@
         /**
          * 
          * @param {*} vo 
-         * @param {*} parentNode 
-         * @param {*} node 
+         * @param {*} elemParentNode 
+         * @param {*} currentVNode 
          */
-        function renderDOM$4 (vo, parentNode, node) {
-            var childNodes = node.childNodes;
+        function renderDirective (vo, elemParentNode, currentVNode) {
+            var result;
+            var directiveName = getDirectiveName(currentVNode.nodeName);
+            switch (directiveName) {
+                case "IF":
+                    result = renderDirective$If(vo, elemParentNode, currentVNode);
+                    break;
+                case "FOR":
+                    break;
+                default:
+                    break;
+            }
+
+            return result;
+        }
+
+        /**
+         * 
+         * @param {*} vo 
+         * @param {*} elemParentNode 
+         * @param {*} currentVNode 
+         */
+        function renderDirective$If (vo, elemParentNode, currentVNode) {
+            if (currentVNode.directive.exp === "true") {
+                renderDOM$4(vo, elemParentNode, currentVNode);
+            }
+            return currentVNode.directive;
+        }
+
+        /**
+         * 
+         * @param {*} vo 
+         * @param {*} elemParentNode 
+         * @param {*} vNode 
+         */
+        function renderDOM$4 (vo, elemParentNode, vNode) {
+            var childNodes = vNode.childNodes;
             var elemNode;
+            var currentVNode;
             for (var i = 0, l = childNodes.length; i < l; i++) {
-                elemNode = renderDOM$3(vo, parentNode, childNodes[i]);
-                renderDOM$4(vo, elemNode, childNodes[i]);
+                currentVNode = childNodes[i];
+                if (currentVNode.isDrective) {
+                    renderDirective(vo, elemParentNode, currentVNode);
+                } else {
+                    elemNode = renderDOM$3(vo, elemParentNode, childNodes[i]);
+                    renderDOM$4(vo, elemNode, childNodes[i]);
+                }
             }
         }
 
@@ -1234,7 +1395,7 @@
          */
         function setAttributeWarpper (vo, elemNode, attrName, attrValue) {
             if (isVoDirective(attrName)) {
-                handleDirectives(vo, elemNode, attrName, attrValue);
+                handleDirectives$Attr(vo, elemNode, attrName, attrValue);
             } else {
                 setAttribute(elemNode, attrName, attrValue);
             }
@@ -1258,11 +1419,11 @@
          * @param {*} attrName 
          * @param {*} attrValue 
          */
-        function handleDirectives (vo, elemNode, attrName, attrValue) {
+        function handleDirectives$Attr (vo, elemNode, attrName, attrValue) {
             if (isVoModelDirective(attrName)) {
-                handleModelDirective(vo, elemNode, attrName, attrValue);
+                handleModelDirective$Attr(vo, elemNode, attrName, attrValue);
             } else if (isVoEventDirectivePrefix(attrName)) {
-                handleEventDirective(vo, elemNode, attrName, attrValue);    
+                handleEventDirective$Attr(vo, elemNode, attrName, attrValue);    
             }
         }
 
@@ -1273,7 +1434,7 @@
          * @param {*} attrName 
          * @param {*} attrValue 
          */
-        function handleModelDirective (vo, elemNode, attrName, attrValue) {
+        function handleModelDirective$Attr (vo, elemNode, attrName, attrValue) {
             elemNode.value = vo.$responseGetterProxy(attrValue);
             if (elemNode.nodeName === "INPUT") {
                 var listener = $bind(function(attrValue) {
@@ -1292,7 +1453,7 @@
          * @param {*} attrName 
          * @param {*} attrValue 
          */
-        function handleEventDirective (vo, elemNode, attrName, attrValue) {
+        function handleEventDirective$Attr (vo, elemNode, attrName, attrValue) {
             var eventType = getVoEventType(attrName);
             addEventListener(vo, elemNode, eventType, attrValue)
         }
