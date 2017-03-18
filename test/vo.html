@@ -4,57 +4,45 @@
 <head>
     <meta charset="UTF-8">
     <title>vo</title>
-    <script src="../dist/vo.js" type="text/javascript"></script>
+    <script src="../src_new/vo.js" type="text/javascript"></script>
 </head>
 
 <body>
-    <!--<div id="app">
-		{{ message }}
-	</div>
-	
-	<div id="app-2">
-		<span v-bind:title="message">
-			Hover your mouse over me for a few seconds to see my dynamically bound title!
-		</span>
-	</div>
-	
-	<div id="app-3">
-		<p v-if="seen">Now you see me</p>
-	</div>
-
-	<div id="app-4">
-		<ol>
-			<li v-for="item in datas">
-				{{item.content}}
-			</li>
-		</ol>
-	</div>-->
-
-    <div id="app-1" class="class-{{msg}}">
-        <h3>{{ message }}
-            <p>{{ message }} div {{ message }} {{ msg }}</p>
-        </h3>
-        <h3 vo-on:click="reverseMessage">Reverse Message</h3>
-        <input type="text" name="someText" vo-model="message" />
+    <div id="app-1" class="class01">
+        <input type="text" name="someText" vo-model="someData.message" />
         <button vo-on:click="reverseMessage">Reverse Message</button>
+        <p>{{ someData.message }} div {{message  }} {{ msg }}</p>
+		<vo-if exp="{{show}}">
+            <h3>this is vo-if</h3>
+		</vo-if>
     </div>
-
-    <!--<div id="app-6">
-		<ol>
-			<todo-item v-for="item in groceryList" v-bind:todo="item"></todo-item>
-		</ol>
-	</div>-->
 
     <script type="text/javascript">
         var vo = new Vo({
-            elem: '#app-1',
+            elem: "#app-1",
             data: {
-                message: 'Hello Vo.js!',
-                msg: '--msg test--'
+                message: "Hello Vo.js!",
+                msg: "--msg test--",
+                someData: {
+                    message: "someData message",
+                    data: {
+                        msg: "data--msg--"
+                    }
+                },
+                show: true
             },
             methods: {
                 reverseMessage: function() {
-                    this.message = this.message.split('').reverse().join('');
+                    this.someData.message = this.someData.message.split("").reverse().join("");
+                }
+            },
+            monitors: {
+                "message": function (message) {
+                    // console.log(message);
+                },
+
+                "someData.message": function (message) {
+                    // console.log(message);
                 }
             }
         });

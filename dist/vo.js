@@ -85,37 +85,33 @@ var pop = Array.prototype.pop;
 /**
  * util API
  */
-function noop() {}
+function noop () {}
 
 // convert to String
-function _toString(val) {
+function _toString (val) {
     return val == null ? '' : typeof val === 'object' ? JSON.stringify(val, null, 2) : String(val);
 }
 
 // convert to number
-function toNumber(val) {
+function toNumber (val) {
     var n = parseFloat(val, 10);
     return (n || n === 0) ? n : val;
 }
 
 // extend
-function extend(object) {
+function extend (object) {
     if (!isObject(object)) {
         return object;
     }
-
     var size = arguments.length;
     if (size === 0) {
         return blantObject;
     }
-
     if (size === 1) {
         return object;
     }
-
     var destination = arguments[0],
         source, key, i = 0;
-
     for (i = 1; i < size; i++) {
         source = arguments[i];
         for (key in source) {
@@ -126,27 +122,26 @@ function extend(object) {
             }
         }
     }
-
     return destination;
 }
 
-function hasOwn(object, key) {
+function hasOwn (object, key) {
     return isObject(object) && hasOwnProperty.call(object, key);
 }
 
-function isFunction(object) {
+function isFunction (object) {
     return !isNull(object) && !isUndefined(object) && toString.call(object) === '[object Function]';
 }
 
-function isObject(object) {
+function isObject (object) {
     return !isUndefined(object) && typeof object === 'object';
 }
 
-function isPlainObject(object) {
+function isPlainObject (object) {
     return object && toString.call(object) === '[object Object]';
 }
 
-function isEmptyObject(object) {
+function isEmptyObject (object) {
     var name;
     for (name in object) {
         return false;
@@ -155,47 +150,47 @@ function isEmptyObject(object) {
     return true;
 }
 
-function isRegex(object) {
+function isRegex (object) {
     return toString.call(object) === '[object Regex]';
 }
 
-function isArray(object) {
+function isArray (object) {
     return toString.call(object) === '[object Array]';
 }
 
-function isNumber(object) {
+function isNumber (object) {
     return !isNull(object) && !isUndefined(object) && toString.call(object) === '[object Number]';
 }
 
-function isNaN(object) {
+function isNaN (object) {
     return isNumber(object) && object !== +object;
 }
 
-function isNull(object) {
+function isNull (object) {
     return object === null;
 }
 
-function isUndefined(object) {
+function isUndefined (object) {
     return object === void(0);
 }
 
-function isBlooean(Object) {
+function isBlooean (Object) {
     return !isNull(object) && isUndefined(object) && toString.call(object) === '[object Blooean]';
 }
 
-function log(msg) {
+function log (msg) {
     if (typeof console !== 'undefined') {
         console.log(msg);
     }
 }
 
-function error(msg) {
+function error (msg) {
     if (typeof console !== 'undefined') {
         console.error(msg);
     }
 }
 
-function warn(msg) {
+function warn (msg) {
     if (typeof console !== 'undefined') {
         console.warn(msg);
     }
@@ -204,9 +199,8 @@ function warn(msg) {
 /**
  * cache
  */
-function cache(key) {
+function cache (key) {
     var cacheMap = {};
-
     function cacheFn(key, value) {
         if (value) {
             cacheMap[key] = value;
@@ -220,7 +214,7 @@ function cache(key) {
 /**
  * make function
  */
-function makeFunction(body) {
+function makeFunction (body) {
     var length = arguments.length;
     if (length) {
         var args;
@@ -240,7 +234,7 @@ function makeFunction(body) {
 /**
  * $bind
  */
-function $bind(fn, ctx) {
+function $bind (fn, ctx) {
     function bindFn() {
         if (1 < arguments.length) {
             return fn.apply(ctx, arguments);
@@ -254,7 +248,7 @@ function $bind(fn, ctx) {
 /**
  * defProperty
  */
-function defProperty(obj, key, value, propertyDescriptor) {
+function defProperty (obj, key, value, propertyDescriptor) {
     if (!propertyDescriptor) {
         propertyDescriptor = {};
     }
@@ -268,7 +262,7 @@ function defProperty(obj, key, value, propertyDescriptor) {
 /**
  * DOM method
  */
-function query(el) {
+function query (el) {
     if (typeof el === 'string') {
         var selector = el;
         el = document.querySelector(el);
@@ -280,7 +274,7 @@ function query(el) {
     return el;
 }
 
-function createElement(tagName) {
+function createElement (tagName) {
     return document.createElement(tagName);
 }
 
@@ -291,117 +285,78 @@ var namespaceMap = {
     xhtml: 'http://www.w3.org/1999/xhtml'
 };
 
-function createElementNS(namespace, tagName) {
+function createElementNS (namespace, tagName) {
     return document.createElementNS(namespaceMap[namespace], tagName)
 }
 
-function createTextNode(text) {
+function createTextNode (text) {
     return document.createTextNode(text)
 }
 
-function createComment(text) {
+function createComment (text) {
     return document.createComment(text)
 }
 
-function insertBefore(parentNode, newNode, referenceNode) {
+function insertBefore (parentNode, newNode, referenceNode) {
     parentNode.insertBefore(newNode, referenceNode);
 }
 
-function removeChild(node, child) {
+function removeChild (node, child) {
     node.removeChild(child);
 }
 
-function appendChild(node, child) {
+function appendChild (node, child) {
     node.appendChild(child);
 }
 
-function parentNode(node) {
+function parentNode (node) {
     return node.parentNode
 }
 
-function nextSibling(node) {
+function nextSibling (node) {
     return node.nextSibling
 }
 
-function tagName(node) {
+function tagName (node) {
     return node.tagName
 }
 
-function setTextContent(node, text) {
+function setTextContent (node, text) {
     node.textContent = text;
 }
 
-function getAttribute(node, key) {
+function getAttribute (node, key) {
     return node.getAttribute(key);
 }
 
-function setAttribute(node, key, val) {
-    node.setAttribute(key, val);
+function setAttribute (node, key, val) {
+    node.setAttribute (key, val);
 }
 
-function addEventListener(vo, node, eventType, listener) {
-    node.addEventListener(eventType, vo.methods[listener]);
+function removeAttribute (node, key) {
+    node.removeAttribute(key);
 }
 
-function addEventListener$2(vo, node, eventType, listener) {
-    node.addEventListener(eventType, listener);
-}
-
-function isVoModelAttr(attrName) {
-    return (attrName === constants.MODEL_ATTR);
-}
-
-function isVoEventAttrPrefix(attrName) {
-    return (-1 !== attrName.indexOf(constants.EVENT_ATTR_PREFIX));
-}
-
-function getVoEventType(attrName) {
-    return attrName.substring(constants.EVENT_ATTR_PREFIX.length);
-}
-
-function setAttributeWarpper(vo, node, attrName, attrValue) {
-    var nodeName = node.nodeName;
-    switch (nodeName) {
-        case "INPUT":
-            handleModelAttr(vo, node, attrName, attrValue);
-        case "BUTTON":
-            break;
-        default:
-            break;
-    }
-    handleEventListener(vo, node, attrName, attrValue);
-    setAttribute(node, attrName, attrValue);
-}
-
-function trigger(node, type) {
-    var event = document.createEvent("HTMLEvents");
-    event.initEvent(type, true, true);
-    node.dispatchEvent(event);
-}
-
-function handleModelAttr(vo, node, attrName, attrValue) {
-    if (isVoModelAttr(attrName)) {
-        var listener = $bind(function(attrValue) {
-            this[attrValue] = node.value;
-        }, vo);
-        addEventListener$2(vo, node, "input", function() {
-            listener(attrValue);
-        });
-    }
-}
-
-function handleEventListener(vo, node, attrName, attrValue) {
-    if (isVoEventAttrPrefix(attrName)) {
-        var eventType = getVoEventType(attrName);
-        addEventListener(vo, node, eventType, attrValue)
-    }
-}
-
-function getOuterHTML(node) {
+function getOuterHTML (node) {
     return node.outerHTML;
 }
 
+function isVoDirective (attrName) {
+    return (-1 !== attrName.indexOf(constants.ATTR_PREFIX))
+}
+
+function isVoModelDirective (attrName) {
+    return (attrName === constants.MODEL_ATTR);
+}
+
+function isVoEventDirectivePrefix (attrName) {
+    return (-1 !== attrName.indexOf(constants.EVENT_ATTR_PREFIX));
+}
+
 module.exports = {
+    isVoDirective: isVoDirective,
+    isVoModelDirective: isVoModelDirective,
+    isVoEventDirectivePrefix: isVoEventDirectivePrefix,
     blankObject: blankObject,
     toString: toString,
     hasOwnProperty: hasOwnProperty,
@@ -446,8 +401,7 @@ module.exports = {
     tagName: tagName,
     setTextContent: setTextContent,
     setAttribute: setAttribute,
-    setAttributeWarpper: setAttributeWarpper,
-    trigger: trigger,
+    removeAttribute: removeAttribute,
     getOuterHTML: getOuterHTML
 };
 
@@ -484,17 +438,17 @@ var preWhiteSpaceCharRE = /^(\s*).*/gm;
 var postWhiteSpaceCharRE = /.*\s*$/gm;
 
 function advance (last, advanceSteps) {
-	last = last.substring(advanceSteps);
-	return last;
+    last = last.substring(advanceSteps);
+    return last;
 }
 
 function parse (vo, nodeName, last) {
-	var stack = [];
-	// parseWhiteSpaceChar(vo, last, preWhiteSpaceCharRE, stack);
-	parseChar(vo, nodeName, last, stack);
+    var stack = [];
+    // parseWhiteSpaceChar(vo, last, preWhiteSpaceCharRE, stack);
+    parseChar(vo, nodeName, last, stack);
     var templateFnBody = makeTemplateFnBody(stack);
     var templateFn = utils.makeFunction("vo", templateFnBody);
-	return templateFn;
+    return templateFn;
 }
 
 function makeTemplateFnBody (stack) {
@@ -507,83 +461,85 @@ function makeTemplateFnBody (stack) {
 }
 
 function parseWhiteSpaceChar (vo, last, re, stack) {
-	var result = re.exec(last)
-	if (result && result[1]) {
-		var whiteSpaceChars = result[1];
-		stack.push("_ts(\""+ whiteSpaceChars.trim() +"\")");
-		last = advance(last, whiteSpaceChars.length);
-	}
+    var result = re.exec(last)
+    if (result && result[1]) {
+        var whiteSpaceChars = result[1];
+        stack.push("_ts(\"" + whiteSpaceChars.trim() + "\")");
+        last = advance(last, whiteSpaceChars.length);
+    }
 }
 
 function parseChar (vo, nodeName, last, stack) {
-	var ldIndex = rdIndex = -1;
-	var leftDelimiter = constants.LEFT_DELIMITER;
-	var rightDelimiter = constants.RIGHT_DELIMITER;
-	while (last) {
-	    ldIndex = last.indexOf(leftDelimiter);
-		rdIndex = last.indexOf(rightDelimiter);
-		if (ldIndex !== -1 && rdIndex !== -1) {
+    var ldIndex = -1;
+    var rdIndex = -1;
+    var leftDelimiter = constants.LEFT_DELIMITER;
+    var rightDelimiter = constants.RIGHT_DELIMITER;
+    while (last) {
+        ldIndex = last.indexOf(leftDelimiter);
+        rdIndex = last.indexOf(rightDelimiter);
+        if (ldIndex !== -1 && rdIndex !== -1) {
             // var token = last.substring(0, ldIndex).trim();
             var token = last.substring(0, ldIndex).replace(/\r/g, constants.ONE_CHAR_STRING).replace(/\n/g, constants.ONE_CHAR_STRING).replace(/\t/g, constants.ONE_CHAR_STRING);
-			stack.push("_ts(\""+ token +"\")");
-			last = advance(last, ldIndex);
+            stack.push("_ts(\"" + token + "\")");
+            last = advance(last, ldIndex);
             ldIndex = last.indexOf(leftDelimiter);
             rdIndex = last.indexOf(rightDelimiter);
-			var responseVar = last.substring(leftDelimiter.length, rdIndex).trim();
+            var responseVar = last.substring(leftDelimiter.length, rdIndex).trim();
             if (/\s+/.test(responseVar)) {
-                throw new Error("\n[vo error] failed to compile template: \n" 
-                    + vo.$cache(vo.elem) + "\n- invalid expression: \n" 
-                    + last.substring(0, rdIndex + rightDelimiter.length));
+                throw new Error("\n[vo error] failed to compile template: \n" +
+                    vo.$cache(vo.elem) + "\n- invalid expression: \n" +
+                    last.substring(0, rdIndex + rightDelimiter.length));
             }
             if (!utils.hasOwn(vo, responseVar)) {
-                throw new Error("\n[vo error] Property or method `" 
-                    + responseVar + "` is not defined on the instance but referenced during render. \n" 
-                    + "Make sure to declare reactive data properties in the data option.");
+                throw new Error("\n[vo error] Property or method `" +
+                    responseVar + "` is not defined on the instance but referenced during render. \n" +
+                    "Make sure to declare reactive data properties in the data option.");
             }
-			stack.push("_ts("+ responseVar +")");
+            stack.push("_ts(" + responseVar + ")");
             last = advance(last, rdIndex + rightDelimiter.length);
-		} else {
+        } else {
             // last = last.trim();
-			last = last.replace(/\r/g, constants.ONE_CHAR_STRING).replace(/\n/g, constants.ONE_CHAR_STRING).replace(/\t/g, constants.ONE_CHAR_STRING);
-			stack.push("_ts(\""+ last +"\")");
+            last = last.replace(/\r/g, constants.ONE_CHAR_STRING).replace(/\n/g, constants.ONE_CHAR_STRING).replace(/\t/g, constants.ONE_CHAR_STRING);
+            stack.push("_ts(\"" + last + "\")");
             last = advance(last, last.length);
-		}
-		ldIndex = rdIndex = -1;
-	}
+        }
+        ldIndex = rdIndex = -1;
+    }
 }
 
 function compile$1 (vo) {
-	compile$2(vo, vo.$vRootNode);
+    compile$2(vo, vo.$vRootNode);
 }
 
 function compile$2 (vo, node) {
-	var nodeType = node.nodeType;
-	if (nodeType === 1 || nodeType === 2 || nodeType === 3) {
-		refresh(vo, node);
-		var childNodes = node.childNodes;
-		for (var i = 0, lI = childNodes.length; i < lI; i++) {
-			compile$2(vo, childNodes[i]);
-		}
-	}
+    var nodeType = node.nodeType;
+    if (nodeType === 1 || nodeType === 2 || nodeType === 3) {
+        refreshVdom(vo, node);
+        var childNodes = node.childNodes;
+        for (var i = 0, lI = childNodes.length; i < lI; i++) {
+            compile$2(vo, childNodes[i]);
+        }
+    }
 }
 
-function refresh (vo, node) {
-	var atrributeMap = node.atrributeMap;
-	if (atrributeMap){
-		for (var i = 0, l = atrributeMap.length; i < l; i ++) {
-			var attr = atrributeMap[i];
-			attr.attrValue = attr.templateFn(vo);
-		}
-	} else {
-		node.data = node.templateFn(vo);
-	}
+function refreshVdom (vo, node) {
+    var attributeMap = node.attributeMap;
+    if (attributeMap) {
+        var attr;
+        for (var i = 0, l = attributeMap.length; i < l; i++) {
+            attr = attributeMap[i];
+            attr.attrValue = attr.templateFn(vo);
+        }
+    } else {
+        node.data = node.templateFn(vo);
+    }
 }
 
 module.exports = {
     parse: parse,
-	compile$1: compile$1
+    compile$1: compile$1,
+    compile$2: compile$2
 };
-
 
 /***/ }),
 /* 3 */
@@ -627,130 +583,152 @@ var uuid = 1;
 var utils = __webpack_require__(0);
 var cache = utils.cache();
 var browser = __webpack_require__(5);
-var op = __webpack_require__(6);
+var observer = __webpack_require__(6);
 var vdom = __webpack_require__(8);
 var render = __webpack_require__(7);
 
 function registResponse (obj, key, value, otherConfig) {
-	var ownPropertyDescriptor = Object.getOwnPropertyDescriptor(obj, key);
-	var getter = ownPropertyDescriptor && ownPropertyDescriptor.get;
-	var setter = ownPropertyDescriptor && ownPropertyDescriptor.set;
-	Object.defineProperty(obj, key, {
-		enumerable: true,
-		configurable: true,
-		get: function () {
-			var val = getter ? getter.call(obj) : value;
-			return val;
-		},
-		set: function (newValue) {
-			var nowValue = getter ? getter.call(obj) : value;
-			if (newValue === nowValue || (newValue !== newValue && nowValue !== nowValue)) {
-				return;
-			}
-			if (setter) {
-				setter.call(obj, newValue);
-			} else {
-				value = newValue;
-			}
-			// obj.$observer.publish(obj, otherConfig.$sub.uuid);
-			// obj.$observer.publish(obj);
-			render.renderDOM$1(obj);
-		}
-	});
+    var ownPropertyDescriptor = Object.getOwnPropertyDescriptor(obj, key);
+    var getter = ownPropertyDescriptor && ownPropertyDescriptor.get;
+    var setter = ownPropertyDescriptor && ownPropertyDescriptor.set;
+    Object.defineProperty(obj, key, {
+        enumerable: true,
+        configurable: true,
+        get: function () {
+            var val = getter ? getter.call(obj) : value;
+            return val;
+        },
+        set: function (newValue) {
+            var nowValue = getter ? getter.call(obj) : value;
+            if (newValue === nowValue || (newValue !== newValue && nowValue !== nowValue)) {
+                return;
+            }
+            if (setter) {
+                setter.call(obj, newValue);
+            } else {
+                value = newValue;
+            }
+            obj.$observer.publish(obj, otherConfig.$sub.uuid);
+            vdom.patch(vo, vo.$vRootNode, vo._vRootNode);
+        }
+    });
+}
+
+function responseSetterProxy (key, value) {
+    var vo = this;
+    if (!value) {
+        value = vo[key];
+    }
+    vo[key] = value;
+    vdom.patch(vo, vo.$vRootNode, vo._vRootNode);
+}
+
+function responseGetterProxy (key) {
+    var vo = this;
+    return vo[key];
 }
 
 /**
  * Vo constructor
  */
-function Vo(options){
-	if (!(this instanceof Vo)) {
-		utils.warn('please use `new` keyword to create Vo object.');
-		return new Vo(options);
-	}
-	this.init$1(options);	
+function Vo (options) {
+    if (!(this instanceof Vo)) {
+        utils.warn('please use `new` keyword to create Vo object.');
+        return new Vo(options);
+    }
+    this.init$1(options);
 }
 
 initMixin$2();
 
 function initMinin$1 (vo) {
-	vo.$cache = cache;
-	vdom.beforeCreateVDOM(vo);
-	vdom.createVDOM$1(vo);
-	vdom.afterCreateVDOM(vo);
-	render.renderDOM$1(vo);
+    vo.$cache = cache;
+    vdom.beforeCreateVDOM(vo);
+    vdom.createVDOM$1(vo);
+    vdom.afterCreateVDOM(vo);
+    render.renderDOM$1(vo);
 }
 
 /**
  * initialize method
  */
-function init$1(options){
-	if (utils.isNull(options) || 
-			utils.isUndefined(options) ||
-			!utils.isObject(options) || 
-			utils.isEmptyObject(options)
-	) {
-		return;
-	}
-	if (!utils.hasOwn(options, 'elem') || !options.elem) {
-		utils.warn('Vo must has elem.');
-		return;
-	}
-	var vo = this;
-	mount$1(vo, options);
-	initMinin$1(vo);
+function init$1 (options) {
+    if (utils.isNull(options) ||
+        utils.isUndefined(options) ||
+        !utils.isObject(options) ||
+        utils.isEmptyObject(options)
+    ) {
+        return;
+    }
+    if (!utils.hasOwn(options, 'elem') || !options.elem) {
+        utils.warn('Vo must has elem.');
+        return;
+    }
+    var vo = this;
+    mount$1(vo, options);
+    initMinin$1(vo);
 }
 
 /**
  * mount
  */
-function mount$1(vo, options){
-	mount$2(vo, options);
+function mount$1 (vo, options) {
+    mount$2(vo, options);
 }
 
-function mount$2(vo, options){
-	mount$data(vo, options.data);
-	mount$method(vo, options.methods);
-	utils.extend(vo, options);
+function mount$2 (vo, options) {
+    mount$moitor(vo, options);
+    mount$data(vo, options);
+    mount$method(vo, options);
+    utils.extend(vo, options);
 }
 
-function mount$data (vo, data) {
-	utils.extend(vo, data);
-	vo.$observer = new op.Observer(vo);
-	if (data && utils.isObject(data)) {
-		var key;
-		for (key in data) {
-			var sub = new op.Subject(vo, utils._toString(key), new op.Observe(vo));
-			vo.$observer.addSub(sub);
-			registResponse(vo, key, data[key], {
-				$sub: sub
-			});
-		}
-	}
-	data = null;
+function mount$moitor (vo, options) {
+    utils.defProperty(vo, '$monitors', {});
+    utils.extend(vo.$monitors, options.monitors);
+    options.monitors = null;
 }
 
-function mount$method (vo, methods) {
-	utils.defProperty(vo, 'methods', {});
-	var key;	
-	for (key in methods) {
-		utils.defProperty(vo.methods, key, utils.$bind(methods[key], vo));
-	}
-	methods = null;
+function mount$data (vo, options) {
+    utils.extend(vo, options.data);
+    vo.$observer = new observer.Observer(vo);
+    if (options.data && utils.isObject(options.data)) {
+        var key;
+        for (key in options.data) {
+            var sub = new observer.Subject(vo, utils._toString(key), vo.$monitors[key]);
+            vo.$observer.addSub(sub);
+            registResponse(vo, key, options.data[key], {
+                $sub: sub
+            });
+        }
+    }
+    options.data = null;
+}
+
+function mount$method (vo, options) {
+    utils.defProperty(vo, '$methods', {});
+    var key;
+    for (key in options.methods) {
+        utils.defProperty(vo.$methods, key, utils.$bind(options.methods[key], vo));
+    }
+    options.methods = null;
 }
 
 /**
  * initMinin$2
  */
-function initMixin$2(){
-	/**
-	 * extend inner method
-	 */
-	utils.extend(Vo.prototype, {
-		version: '1.0.0',
-		init$1: init$1,
-		_ts: utils._toString
-	});
-	Vo.prototype.utils = utils;
+function initMixin$2 () {
+    /**
+     * extend inner method
+     */
+    utils.extend(Vo.prototype, {
+        version: '1.0.0',
+        init$1: init$1,
+        _ts: utils._toString,
+        $responseSetterProxy: responseSetterProxy,
+        $responseGetterProxy: responseGetterProxy
+    });
+    Vo.prototype.utils = utils;
 }
 
 module.exports = Vo;
@@ -759,7 +737,7 @@ module.exports = Vo;
 /* 5 */
 /***/ (function(module, exports) {
 
-var inBrowser =  typeof window !== 'undefined';
+var inBrowser = typeof window !== 'undefined';
 
 module.exports = {
     inBrowser: inBrowser
@@ -769,45 +747,48 @@ module.exports = {
 /* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var uitls = __webpack_require__(0);
+var utils = __webpack_require__(0);
+var compiler = __webpack_require__(2);
 var uuid = 1;
 
-function Subject (vo, subName, observe) {
+function Subject (vo, subName, monitorFn) {
     if (!(this instanceof Subject)) {
-        return new Subject(subName, observe);
+        return new Subject(subName, monitor);
     }
     this.uuid = uuid++;
     this.vo = vo;
     this.subName = subName;
-    this.observe = observe;
+    this.monitor = new Monitor(vo, monitorFn);
 }
 
-Subject.prototype.registObserve = function (observe) {
-    if (!(observe instanceof Observe)) {
+Subject.prototype.registMonitor = function (monitor) {
+    if (!(monitor instanceof Monitor)) {
         return;
     }
-    this.observe = observe;
+    this.monitor = monitor;
 }
 
-Subject.prototype.removeObserve = function () {
-    this.observe = null;
+Subject.prototype.removeMonitor = function () {
+    this.monitor = null;
 }
 
 Subject.prototype.notify = function (vo) {
-    this.observe.update(vo, this.subName);
+    this.monitor.update(vo, this.subName);
 }
 
-function Observe (vo) {
-    if (!(this instanceof Observe)) {
-        return new Observe(vo);
+function Monitor (vo, monitorFn) {
+    if (!(this instanceof Monitor)) {
+        return new Monitor(vo, monitorFn);
     }
     this.uuid = uuid++;
     this.vo = vo;
+    this.monitorFn = monitorFn;
 }
 
-Observe.prototype.update = function (vo, subName) {
-    var vRootNode = vo.$vRootNode;
-    vo.compile$1(vo, vRootNode, subName);
+Monitor.prototype.update = function (vo, subName) {
+    if (utils.isFunction(this.monitorFn)) {
+        this.monitorFn.call(vo, vo.$responseGetterProxy(subName));
+    }
 }
 
 function Observer (vo, sub) {
@@ -858,14 +839,14 @@ Observer.prototype.publish = function (vo, uuid) {
         var subs = uitls.slice.call(this.subs);
         var sub;
         for (var i = 0, l = subs.length; i < l; i++) {
-                var sub = subs[i];
-                sub.notify(vo);
+            var sub = subs[i];
+            sub.notify(vo);
         }
     }
 }
 
 module.exports = {
-    Observe: Observe,
+    Monitor: Monitor,
     Subject: Subject,
     Observer: Observer
 };
@@ -876,73 +857,127 @@ module.exports = {
 
 var compiler = __webpack_require__(2);
 var utils = __webpack_require__(0);
+var constants = __webpack_require__(1);
 
 function beforeRenderDOM (vo) {
-	// vo.$observer.publish(vo);
-	compiler.compile$1(vo);
+    // vo.$observer.publish(vo);
+    compiler.compile$1(vo);
 }
 
 function renderDOM$1 (vo) {
-	beforeRenderDOM(vo);
-	var dom = renderDOM$2(vo);
-	renderDOM$5(vo, dom);
-	afterRenderDOM(vo);
+    beforeRenderDOM(vo);
+    var dom = renderDOM$2(vo);
+    renderDOM$5(vo, dom);
+    afterRenderDOM(vo);
 }
 
 
 function renderDOM$2 (vo) {
-	var rootNode = vo.$vRootNode;
-	var dom = renderDOM$3(vo, void (0), rootNode);
-	renderDOM$4(vo, dom, rootNode);
-	return dom;
+    var rootNode = vo.$vRootNode;
+    var dom = renderDOM$3(vo, void(0), rootNode);
+    renderDOM$4(vo, dom, rootNode);
+    return dom;
 }
 
 function renderDOM$3 (vo, parentNode, node) {
-	var nodeType = node.nodeType;
-	var targetNode;
-	switch (nodeType) {
-		case 1:
-			targetNode = utils.createElement(node.nodeName);
-			var attributeMap = node.atrributeMap;
-			for (var i = 0, l = attributeMap.length; i < l; i++) {
-                utils.setAttributeWarpper(vo, targetNode, attributeMap[i]['attrName'], attributeMap[i]['attrValue']);
-			}
-			if (parentNode) {
-				utils.appendChild(parentNode, targetNode);
-			}
-			break;
-		case 3:
-			var targetTextNode = utils.createTextNode(node.data);
-			utils.appendChild(parentNode, targetTextNode);
-			targetNode = parentNode;
-			break;
-		default:
-			targetNode = parentNode;
-			break;
-	}
-	return targetNode;
+    var nodeType = node.nodeType;
+    var elemNode;
+    switch (nodeType) {
+        case 1:
+            elemNode = utils.createElement(node.nodeName);
+            var attributeMap = node.attributeMap;
+            for (var i = 0, l = attributeMap.length; i < l; i++) {
+                setAttributeWarpper(vo, elemNode, attributeMap[i]['attrName'], attributeMap[i]['attrValue']);
+            }
+            if (parentNode) {
+                utils.appendChild(parentNode, elemNode);
+            }
+            node.elemRef = elemNode;
+            break;
+        case 3:
+            var targetTextNode = utils.createTextNode(node.data);
+            utils.appendChild(parentNode, targetTextNode);
+            node.elemRef = targetTextNode;
+            elemNode = parentNode;
+            break;
+        default:
+            elemNode = parentNode;
+            break;
+    }
+    return elemNode;
 }
 
 function renderDOM$4 (vo, parentNode, node) {
-	var childNodes = node.childNodes;
-	var targetNode;
-	for (var i = 0, l = childNodes.length; i < l; i++) {
-		targetNode = renderDOM$3(vo, parentNode, childNodes[i]);
-		renderDOM$4(vo, targetNode, childNodes[i]);
-	}
+    var childNodes = node.childNodes;
+    var elemNode;
+    for (var i = 0, l = childNodes.length; i < l; i++) {
+        elemNode = renderDOM$3(vo, parentNode, childNodes[i]);
+        renderDOM$4(vo, elemNode, childNodes[i]);
+    }
 }
 
 function renderDOM$5 (vo, dom) {
-	var $elem  = utils.query(vo.elem);
-	var pn = $elem.parentNode;
-	if (pn) {
-		utils.insertBefore(pn, dom, $elem);
-		utils.removeChild(pn, $elem);
-	}
+    var $elem = utils.query(vo.elem);
+    var pn = $elem.parentNode;
+    if (pn) {
+        utils.insertBefore(pn, dom, $elem);
+        utils.removeChild(pn, $elem);
+    }
 }
 
 function afterRenderDOM (vo) {
 
+}
+
+function addEventListener (vo, elemNode, eventType, listener) {
+    elemNode.addEventListener(eventType, vo.$methods[listener]);
+}
+
+function addEventListener$2 (vo, elemNode, eventType, listener) {
+    elemNode.addEventListener(eventType, listener);
+}
+
+function getVoEventType (attrName) {
+    return attrName.substring(constants.EVENT_ATTR_PREFIX.length);
+}
+
+function setAttributeWarpper (vo, elemNode, attrName, attrValue) {
+    if (utils.isVoDirective(attrName)) {
+        handleDirectives(vo, elemNode, attrName, attrValue);
+    } else {
+        utils.setAttribute(elemNode, attrName, attrValue);
+    }
+}
+
+function trigger (elemNode, type) {
+    var event = document.createEvent("HTMLEvents");
+    event.initEvent(type, true, true);
+    elemNode.dispatchEvent(event);
+}
+
+function handleDirectives (vo, elemNode, attrName, attrValue) {
+    if (utils.isVoModelDirective(attrName)) {
+        handleModelDirective(vo, elemNode, attrName, attrValue);
+    }else if (utils.isVoEventDirectivePrefix(attrName)) {
+        handleEventDirective(vo, elemNode, attrName, attrValue);    
+    }
+}
+
+function handleModelDirective (vo, elemNode, attrName, attrValue) {
+    elemNode.value = vo.$responseGetterProxy(attrValue);
+    if (elemNode.nodeName === "INPUT") {
+        var listener = utils.$bind(function(attrValue) {
+            this[attrValue] = elemNode.value;
+        }, vo);
+        addEventListener$2(vo, elemNode, "input", function() {
+            listener(attrValue);
+        });
+    }
+}
+
+function handleEventDirective (vo, elemNode, attrName, attrValue) {
+    var eventType = getVoEventType(attrName);
+    addEventListener(vo, elemNode, eventType, attrValue)
 }
 
 module.exports = {
@@ -972,39 +1007,20 @@ function convertAttrToList (vo, nodeName, attributes) {
 
 function handleNodeAttr (vo, nodeName, currentAttr, attrList) {
     var attrName = currentAttr.nodeName;
-    switch (nodeName) {
-        case "INPUT":
-            handleSpecialAttr(vo, nodeName, currentAttr, attrList);
-            break;
-        case "BUTTON":
-            break;
-        default:
-            break;
-    }
-    var templateFn = compiler.parse(vo, nodeName, currentAttr.nodeValue);
-    attrList.push({
+    var attrObject = {
         attrName: attrName,
         attrValue: currentAttr.nodeValue,
+        nodeName: nodeName,
         nodeType: currentAttr.nodeType,
-        templateFn: templateFn
-    });
+        operation: 0
+    };
+    handleSpecialAttr(vo, nodeName, currentAttr, attrObject);
+    attrObject.templateFn = compiler.parse(vo, nodeName, currentAttr.nodeValue);
+    attrList.push(attrObject);
 }
 
-function handleSpecialAttr (vo, nodeName, currentAttr, attrList) {
-    var attrName = currentAttr.nodeName;
-    if (attrName === "vo-model") {
-        var attrName = "value";
-        var attrValue = constants.LEFT_DELIMITER + 
-                        currentAttr.nodeValue + 
-                        constants.RIGHT_DELIMITER;
-        var templateFn = compiler.parse(vo, nodeName, attrValue);
-        attrList.push({
-            attrName: attrName,
-            attrValue: attrValue,
-            nodeType: currentAttr.nodeType,
-            templateFn: templateFn
-        });
-    }
+function handleSpecialAttr (vo, nodeName, currentAttr, attrObject) {
+
 }
 
 function beforeCreateVDOM (vo) {
@@ -1015,23 +1031,55 @@ function beforeCreateVDOM (vo) {
     }
 }
 
-function VNode (vo, nodeName, atrributeMap, data, parentNode, childNodes, nodeType) {
+function VNode (vo, elemRef, nodeName, nodeType, attributeMap, data, parentNode, childNodes) {
     if (!(this instanceof VNode)) {
-        return new VNode(vo, nodeName, atrributeMap, data, parentNode, childNodes, nodeType);
+        return new VNode(vo, elemRef, nodeName, nodeType, attributeMap, data, parentNode, childNodes);
     }
     this.vo = vo;
+    this.elemRef = elemRef;
     this.nodeName = nodeName;
-    this.atrributeMap = convertAttrToList(vo, nodeName, atrributeMap);
+    this.nodeType = nodeType;
+    this.attributeMap = convertAttrToList(vo, nodeName, attributeMap);
     this.templateFn = compiler.parse(vo, nodeName, data);
     this.data = data;
     this.parentNode = parentNode;
     this.childNodes = childNodes;
-    this.nodeType = nodeType;
+    this.dirty = false;
+    this.operation = 0;
+}
+
+function cloneVNode (vn) {
+    var cloned;
+    if (vn) {
+        var childrenNodes = vn.childNodes.slice();
+        var attributeMap = vn.attributeMap;
+        if (attributeMap) {
+            attributeMap = vn.attributeMap.slice();
+        }
+        cloned = new VNode(vn.vo, vn.elemRef, vn.nodeName, vn.nodeType, attributeMap, vn.data, vn.parentNode, childNodes);
+    }
+    return cloned;
+}
+
+function cloneAttribute (attr) {
+    var cloned;
+    if (attr) {
+        cloned = {
+            attrName: attr.attrName,
+            attrValue: attr.nodeValue,
+            nodeName: attr.nodeName,
+            nodeType: attr.nodeType,
+            operation: attr.operation
+        };
+    }
+    return cloned;
 }
 
 function createVDOM$1 (vo) {
-    vo.$vRootNode = new VNode(vo, vo.$elem.nodeName, vo.$elem.attributes, vo.$elem.data, null, [], vo.$elem.nodeType);
+    vo.$vRootNode = new VNode(vo, vo.$elem, vo.$elem.nodeName, vo.$elem.nodeType, vo.$elem.attributes, vo.$elem.data, null, []);
+    vo._vRootNode = new VNode(vo, vo.$elem, vo.$elem.nodeName, vo.$elem.nodeType, vo.$elem.attributes, vo.$elem.data, null, []);
     genVDOMTree(vo, vo.$vRootNode, vo.$elem.childNodes);
+    genVDOMTree(vo, vo._vRootNode, vo.$elem.childNodes); // used to patch
 }
 
 function genVDOMTree (vo, rootNode, childNodes) {
@@ -1040,7 +1088,7 @@ function genVDOMTree (vo, rootNode, childNodes) {
         var cn = childNodes[i];
         if (cn.nodeType === 1 || cn.nodeType === 3) {
             var atrributeMap = cn.attributes;
-            var vNode = new VNode(vo, cn.nodeName, atrributeMap, cn.data, parentNode, [], cn.nodeType);
+            var vNode = new VNode(vo, cn, cn.nodeName, cn.nodeType, atrributeMap, cn.data, parentNode, []);
             parentNode.childNodes.push(vNode);
             genVDOMTree(vo, vNode, cn.childNodes);
         }
@@ -1051,12 +1099,205 @@ function afterCreateVDOM (vo) {
     utils.log(vo.$vRootNode);
 }
 
+function patch (vo, oldVNode, newVNode) {
+    // compiler.compile$2(vo, vo._vRootNode);
+    patchVNode(vo, oldVNode, newVNode);
+}
+
+function patchVNode (vo, oldVNode, newVNode) {
+    var nodeType = (oldVNode.nodeType === newVNode.nodeType) ? oldVNode.nodeType : 0;
+    switch (nodeType) {
+        case 1:
+            patchAttributes(vo, oldVNode, newVNode);
+            patchChildren(vo, oldVNode, newVNode);
+            break;
+        case 2:
+            break;
+        case 3:
+            patchTextContent(vo, oldVNode, newVNode);
+            break;
+        default: 
+            break;
+    }
+}
+
+function updateTextContent (elemRef, text) {
+    utils.setTextContent(elemRef, text);
+}
+
+function patchTextContent (vo, oldVNode, newVNode) {
+    if (utils.isFunction(newVNode.templateFn)) {
+        var newData = newVNode.templateFn(vo);
+        if (oldVNode.data !== newData) {
+            oldVNode.data = newData
+            oldVNode.templateFn = compiler.parse(vo, newVNode.nodeName, newVNode.data);
+            updateTextContent(oldVNode.elemRef, newData);
+        }
+    }
+}
+
+function patchChildren (vo, oldVNode, newVNode) {
+    var oldChildren = oldVNode.childNodes;
+    var newChildren = newVNode.childNodes;
+    updateChildren(vo, oldVNode.elemRef, oldChildren, newChildren);
+}
+
+function removeElement (vo, elemRef) {
+    utils.removeChild(utls.parentNode(elemRef), elemRef);
+}
+
+function createElement (vo, parentElemRef, nodeName, attrList, children) {
+    var elemRef;
+    if (parentElemRef) {
+        utils.appendChild(parentElemRef, elemRef);
+    }
+    attrList = attrList || [];
+    var i, len;
+    for (i = 0, len = attrList.length; i < len; i++) {
+        utils.setAttribute(elemRef, attrList[i]["attrName"], attrList[i]["attrValue"]);
+    }
+    for (i = 0, len = children.length; i < len; i++) {
+        createElement(vo, elemRef, children[i]["nodeName"], children[i]["attributeMap"], children[i]["childNodes"]); 
+    }
+}
+
+function createTextNode (vo, parentElemRef, text) {
+    var textNode = utils.createTextNode(text);
+    utils.appendChild(parentElemRef, textNode);
+}
+
+function updateChildren (vo, elemRef, oldChildren, newChildren) {
+    var currentNode;
+    var i = 0, lenI = newChildren.length;
+    while (i < lenI) {
+        currentNode = newChildren[i];
+        switch (currentNode["operation"]) {
+            case 1: // add
+                var clonedVNode = cloneVNode(currentNode);
+                clonedVNode.parentNode = 
+                cloneVNode.templateFn = compiler.parse(vo, newVNode.nodeName, newVNode.data);
+                oldChildren.splice(i, 1, clonedVNode); 
+                if (clonedVNode.nodeType === 1) {
+                    createElement(vo, clonedVNode.parentNode.elemRef, clonedVNode.nodeName, clonedVNode.attributeMap, clonedVNode.childNodes);               
+                } else if (clonedVNode.nodeType === 3) {
+                    createTextNode(vo, clonedVNode.parentNode.elemRef, clonedVNode.data);
+                }
+                break;
+            case -1: // delete
+                oldChildren.splice(i, 1);
+                newChildren.splice(i, 1);
+                lenI--;
+                removeElement(newChildren[i]["elemRef"]);
+                break;
+            case 0: // normalUpdate
+                patchVNode(vo, oldChildren[i], newChildren[i]);
+                break;
+            default:
+                break;
+        }
+        currentNode["operation"] = 0;
+        i++;
+    }
+}
+
+function updateAttribute (elemRef, attrName, attrValue, operation) {
+    if (operation === -1) {
+      utils.removeAttribute(elemRef, attrName);  
+    } else {
+        utils.setAttribute(elemRef, attrName, attrValue);
+    }
+}
+
+function abnormalUpdateAttribute (vo, elemRef, oldAttrMap, newAttrMap) {
+    var len = oldAttrMap.length - newAttrMap.length;
+    var indicator = len < 0 ? 1 : len === 0 ? 0 : -1;
+    switch (indicator) {
+        case 1: // add
+            var otherUpdateAttrMap = newAttrMap.slice(newAttrMap.length + len);
+            var templateFn;
+            for (var i = 0, l = otherUpdateAttrMap.length; i < l; i++) {
+                templateFn = otherUpdateAttrMap[i]["templateFn"];
+                if (utils.isFunction(templateFn)) {
+                    otherUpdateAttrMap[i]["attrValue"] = templateFn(vo);
+                    updateAttribute(elemRef, otherUpdateAttrMap[i]["attrName"], otherUpdateAttrMap[i]["attrValue"]);
+                }
+            }
+            oldAttrMap = oldAttrMap.concat(otherUpdateAttrMap);
+            break;
+        case -1: // delete
+            for (var i = len, l = oldAttrMap.length; i < l; i++) {
+                utils.removeAttribute(elemRef, oldAttrMap[i]["attrName"]);
+            }
+            oldAttrMap = oldAttrMap.slice(0, oldAttrMap.length + len);
+            break;
+        default:
+            break;
+    }
+}
+
+function patchAttributes (vo, oldVNode, newVNode) {
+    var oldAttrMap = oldVNode.attributeMap;
+    var newAttrMap = newVNode.attributeMap;
+    // abnormalUpdateAttribute
+    if (!oldAttrMap && !newAttrMap) {
+        return;
+    }
+    if ((!oldAttrMap && newAttrMap) || 
+        (oldAttrMap && !newAttrMap)
+    ){
+        abnormalUpdateAttribute (vo, oldVNode.elemRef, (oldAttrMap || []), (newAttrMap || []));
+        return;
+    }
+    var currentAttr;
+    var i = 0, lenI = newAttrMap.length;
+    while (i < lenI) {
+        currentAttr = newAttrMap[i];
+        switch (currentAttr["operation"]) {
+            case 1: // add
+                var clonedAttr = cloneAttribute(currentAttr);
+                clonedAttr.templateFn = compiler.parse(vo, clonedAttr.nodeName, clonedAttr.attrValue);
+                oldAttrMap.splice(i, 1, clonedAttr);
+                updateAttribute(oldVNode.elemRef, clonedAttr.attrName, clonedAttr.attrValue, 1);
+                break;
+            case -1: // delete
+                oldAttrMap.splice(i, 1);
+                newAttrMap.splice(i, 1);
+                lenI--;
+                updateAttribute(oldVNode.elemRef, clonedAttr.attrName, clonedAttr.attrValue, -1);
+                break;
+            case 0: // normalUpdate
+                var newAttrValue = newAttrMap[i].templateFn(vo);
+                if (utils.isVoDirective(newAttrMap[i]["attrName"])) {
+                    if (utils.isVoModelDirective(newAttrMap[i]["attrName"])) {
+                        if (newAttrMap[i]["nodeName"] === "INPUT") {
+                            oldVNode.elemRef.value = vo.$responseGetterProxy(newAttrValue);
+                        }
+                    }
+                } else {
+                    if (newAttrValue !== oldAttrMap[i]["attrValue"]) {
+                        oldAttrMap[i]["attrValue"] = newAttrValue;
+                        oldAttrMap[i]["templateFn"] = compiler.parse(vo, oldVNode.nodeName, currentAttr.attrValue);
+                        updateAttribute(oldVNode.elemRef, currentAttr.attrName, newAttrValue, 0);
+                    }
+                }
+                break;
+            default:
+                break;
+        }
+        currentAttr["operation"] = 0;
+        i++;
+    }
+    // abnormalUpdateAttribute
+    abnormalUpdateAttribute (vo, oldVNode.elemRef, oldAttrMap, newAttrMap);
+}
+
 module.exports = {
     beforeCreateVDOM: beforeCreateVDOM,
     createVDOM$1: createVDOM$1,
     afterCreateVDOM: afterCreateVDOM,
     VNode: VNode,
-    genVDOMTree: genVDOMTree
+    genVDOMTree: genVDOMTree,
+    patch: patch
 };
 
 /***/ }),

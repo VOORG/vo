@@ -30,8 +30,7 @@ EventBus.prototype.off = function (type, handler) {
                     break;
                 }
             }
-        }
-        else {
+        } else {
             this.events[type] = [];
         }
     }
