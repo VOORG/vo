@@ -1831,7 +1831,7 @@
             var promise = Promise.resolve();
             asyncFn = function () {
                 promise.then(nextPollHandler, error).catch(error);
-            }
+            };
         } else {
             asyncFn = function () {
                 setTimeout(nextPollHandler, 0);
