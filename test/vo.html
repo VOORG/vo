@@ -8,12 +8,11 @@
 </head>
 
 <body>
-    <div id="app-1" class="class01">
+    <div id="app-1" class="class01-{{msg}}">
         <input type="text" name="someText" vo-model="someData.message" />
         <button vo-on:click="reverseMessage">Reverse Message</button>
         <p>{{ someData.message }} div {{message  }} {{ msg }}</p>
 		<vo-if exp="{{show}}">
-            <h3>this is first vo-if</h3>
             <vo-if exp="{{show2}}">
                 <div>
                     <h3>this is second vo-if</h3>
@@ -44,6 +43,13 @@
             methods: {
                 reverseMessage: function() {
                     this.someData.message = this.someData.message.split("").reverse().join("");
+                    this.$emitter.on("emitter01", function () {
+                        console.log("emitter01");
+                    });
+                    var self = this;
+                    setTimeout(function () {
+                        self.$emitter.emit("emitter01");
+                    }, 1000);
                 }
             },
             monitors: {
