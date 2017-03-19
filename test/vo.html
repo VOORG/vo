@@ -13,10 +13,15 @@
         <button vo-on:click="reverseMessage">Reverse Message</button>
         <p>{{ someData.message }} div {{message  }} {{ msg }}</p>
 		<vo-if exp="{{show}}">
-            <h3>this is vo-if</h3>
-            <vo-if exp="{{secondShow}}">
-                <h3>this is second vo-if</h3>
-		    </vo-if>
+            <h3>this is first vo-if</h3>
+            <vo-if exp="{{show2}}">
+                <div>
+                    <h3>this is second vo-if</h3>
+                    <vo-if exp="{{show3}}">
+                        <h4>this is third vo-if</h4>
+                    </vo-if>
+                </div>
+            </vo-if>
 		</vo-if>
     </div>
 
@@ -33,7 +38,8 @@
                     }
                 },
                 show: true,
-                secondShow: true
+                show2: true,
+                show3: true
             },
             methods: {
                 reverseMessage: function() {

@@ -736,7 +736,7 @@
             if (currentVNode.attributeMap) {
                 templateFn = currentVNode.attributeMap[0]["templateFn"];
             }
-            currentVNode.isDrective = true;
+            currentVNode.isDirective = true;
             currentVNode.directive = {
                 directiveName: "IF",
                 exp: templateFn(vo)
@@ -755,7 +755,7 @@
                 if (attributeMap) {
                     attributeMap = vn.attributeMap.slice();
                 }
-                cloned = new VNode(vn.vo, vn.elemRef, vn.nodeName, vn.nodeType, attributeMap, vn.data, vn.parentNode, childNodes);
+                cloned = new VNode(vn.vo, vn.elemRef, vn.nodeName, vn.nodeType, attributeMap, vn.data, null, childNodes);
             }
             return cloned;
         }
@@ -836,7 +836,7 @@
             var nodeType = (oldVNode.nodeType === newVNode.nodeType) ? oldVNode.nodeType : 0;
             switch (nodeType) {
                 case 1:
-                    if (newVNode.isDrective) {
+                    if (newVNode.isDirective) {
                         patchDirective(vo, oldVNode, newVNode);
                     } else {
                         patchAttributes(vo, oldVNode, newVNode);
@@ -881,16 +881,13 @@
             var templateFn = newAttrMap[0]["templateFn"];
             if (isFunction(templateFn)) {
                 var newAttrValue = templateFn(vo);
+                var directOperation;
                 if (oldAttrMap[0]["attrValue"] !== newAttrValue) {
                     oldAttrMap[0]["attrValue"] = newAttrValue;
                     oldAttrMap[0]["templateFn"] = compiler.parse(vo, newVNode.nodeName, newAttrMap[0]["attrValue"]);
-                    var operation = newAttrValue === "true" ? 1 : -1;
-                    var newChildNodes = newVNode.childNodes;
-                    for (var i = 0, len = newChildNodes.length; i < len; i++) {
-                        newChildNodes[i]["operation"] = operation;
-                    }
-                    patchChildren(vo, oldVNode, newVNode);
+                    directOperation = newAttrValue === "true" ? 1 : -1;
                 }
+                patchChildren(vo, oldVNode, newVNode, directOperation);
             }
         }
 
@@ -926,8 +923,8 @@
          * @param {*} oldVNode 
          * @param {*} newVNode 
          */
-        function patchChildren (vo, oldVNode, newVNode) {
-            updateChildren(vo, oldVNode, newVNode);
+        function patchChildren (vo, oldVNode, newVNode, directOperation) {
+            updateChildren(vo, oldVNode, newVNode, directOperation);
         }
 
         /**
@@ -947,8 +944,8 @@
          * @param {*} attrList 
          * @param {*} children 
          */
-        function createElement (vo, parentElemRef, nodeName, attrList, children) {
-            var elemRef;
+        function createElement$2 (vo, parentElemRef, nodeName, attrList, children) {
+            var elemRef = createElement(nodeName);
             if (parentElemRef) {
                 appendChild(parentElemRef, elemRef);
             }
@@ -958,7 +955,7 @@
                 setAttribute(elemRef, attrList[i]["attrName"], attrList[i]["attrValue"]);
             }
             for (i = 0, len = children.length; i < len; i++) {
-                createElement(vo, elemRef, children[i]["nodeName"], children[i]["attributeMap"], children[i]["childNodes"]); 
+                createElement$2(vo, elemRef, children[i]["nodeName"], children[i]["attributeMap"], children[i]["childNodes"]); 
             }
         }
 
@@ -979,32 +976,26 @@
          * @param {*} oldVNode 
          * @param {*} newVNode 
          */
-        function updateChildren (vo, oldVNode, newVNode) {
+        function updateChildren (vo, oldVNode, newVNode, directOperation) {
             var oldChildren = oldVNode.childNodes;
             var newChildren = newVNode.childNodes;
-            var currentVNode;
-            var i = 0, lenI = newChildren.length;
-            while (i < lenI) {
-                currentVNode = newChildren[i];
-                switch (currentVNode["operation"]) {
+            var i = 0, len = newChildren.length;
+            while (i < len) {
+                switch (directOperation || newChildren[i]["operation"]) {
                     case 1: // add
                         // var clonedVNode = cloneVNode(currentVNode);
                         // cloneVNode.parentNode = oldVNode;
                         // cloneVNode.templateFn = compiler.parse(vo, newVNode.nodeName, newVNode.data);
                         // oldChildren.splice(i, 1, clonedVNode); 
                         // if (clonedVNode.nodeType === 1) {
-                        //     createElement(vo, clonedVNode.parentNode.elemRef, clonedVNode.nodeName, clonedVNode.attributeMap, clonedVNode.childNodes);               
+                        //     createElement$2(vo, clonedVNode.parentNode.elemRef, clonedVNode.nodeName, clonedVNode.attributeMap, clonedVNode.childNodes);               
                         // } else if (clonedVNode.nodeType === 3) {
                         //     createTextNode(vo, clonedVNode.parentNode.elemRef, clonedVNode.data);
                         // }
-                        if (currentVNode.parentNode.isDrective) {
-                            updateDirective(vo, oldChildren[i], currentVNode);
-                        } else {
-
-                        }
+                        addChildren(vo, oldChildren[i], newChildren[i]);
                         break;
                     case -1: // delete
-                        removeElement(vo, oldChildren[i]["elemRef"]);
+                        deleteChildren(vo, oldChildren[i], newChildren[i]);
                         break;
                     case 0: // normalUpdate
                         patchVNode(vo, oldChildren[i], newChildren[i]);
@@ -1012,8 +1003,36 @@
                     default:
                         break;
                 }
-                currentVNode["operation"] = 0;
+                newChildren[i]["operation"] = 0;
                 i++;
+            }
+        }
+
+        /**
+         * 
+         * @param {*} vo 
+         * @param {*} oldVNode 
+         * @param {*} newVNode 
+         */
+        function addChildren (vo, oldVNode, newVNode) {
+            if (newVNode.parentNode.isDirective) {
+                updateDirective(vo, oldVNode, newVNode);
+            } else {
+                createElement$2(vo, newVNode.parentNode.elemRef, newVNode.nodeName, newVNode.attributeMap, newVNode.childNodes);
+            }
+        }
+
+        /**
+         * 
+         * @param {*} vo 
+         * @param {*} oldVNode 
+         * @param {*} newVNode 
+         */
+        function deleteChildren (vo, oldVNode, newVNode) {
+            if (newVNode.isDirective) {
+                updateChildren(vo, oldVNode, newVNode, -1);
+            } else {
+                removeElement(vo, oldVNode.elemRef);
             }
         }
 
@@ -1310,7 +1329,7 @@
             var currentVNode;
             for (var i = 0, l = childNodes.length; i < l; i++) {
                 currentVNode = childNodes[i];
-                if (currentVNode.isDrective) {
+                if (currentVNode.isDirective) {
                     renderDirective(vo, elemParentNode, currentVNode);
                 } else {
                     elemNode = renderDOM$3(vo, elemParentNode, childNodes[i]);
@@ -1797,7 +1816,7 @@
         if (!isUndefined(Promise) && isNative(Promise)) {          
             var promise = Promise.resolve();
             asyncFn = function () {
-                promise.then(nextPollHandler, log).catch(log);
+                promise.then(nextPollHandler, error).catch(error);
             }
         } else {
             asyncFn = function () {
