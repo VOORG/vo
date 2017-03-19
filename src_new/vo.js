@@ -12,9 +12,9 @@
     var ONE_CHAR_STRING = " ";
     var LEFT_DELIMITER = "{{";
     var RIGHT_DELIMITER = "}}";
-    var ATTR_PREFIX = "vo-";
-    var MODEL_ATTR = ATTR_PREFIX + "model";
-    var EVENT_ATTR_PREFIX = ATTR_PREFIX + "on:";
+    var DIRECTIVE_PREFIX = "vo-";
+    var MODEL_ATTR = DIRECTIVE_PREFIX + "model";
+    var EVENT_DIRECTIVE_PREFIX = DIRECTIVE_PREFIX + "on:";
 
     var blankObject = {};
     var toString = Object.prototype.toString;
@@ -112,7 +112,7 @@
     var isRegex = isType("Regex");
     var isArray = isType("Array");
     var isNumber = isType("Number");
-    var isBlooean = isType("Blooean");
+    var isBoolean = isType("Boolean");
 
     /**
      * 
@@ -426,7 +426,7 @@
      * @param {*} attrName 
      */
     function isVoDirective (attrName) {
-        return (-1 !== attrName.indexOf(ATTR_PREFIX))
+        return (-1 !== attrName.indexOf(DIRECTIVE_PREFIX))
     }
 
     /**
@@ -434,7 +434,7 @@
      * @param {*} name 
      */
     function getDirectiveName (name) {
-        return name.substring(ATTR_PREFIX.length);
+        return name.substring(DIRECTIVE_PREFIX.length);
     }
 
     /**
@@ -450,7 +450,7 @@
      * @param {*} attrName 
      */
     function isVoEventDirectivePrefix (attrName) {
-        return (-1 !== attrName.indexOf(EVENT_ATTR_PREFIX));
+        return (-1 !== attrName.indexOf(EVENT_DIRECTIVE_PREFIX));
     }
 
     var browser = (function () {
@@ -524,7 +524,7 @@
             var config = this.monitorConfig;
             if (isObject(config)) {
                 if (isFunction(config.fn)) {
-                    if (config.async === true) {
+                    if (config.async === false) {
                         config.fn.call(vo, vo.$responseGetterProxy(config.monitorName));
                     } else {
                         var cb = $bind(config.fn, vo, vo.$responseGetterProxy(config.monitorName));
@@ -1413,7 +1413,7 @@
          * @param {*} attrName 
          */
         function getVoEventType (attrName) {
-            return attrName.substring(EVENT_ATTR_PREFIX.length);
+            return attrName.substring(EVENT_DIRECTIVE_PREFIX.length);
         }
 
         /**
@@ -1633,7 +1633,8 @@
                 if (ldIndex !== -1 && rdIndex !== -1) {
                     // var token = last.substring(0, ldIndex).trim();
                     var token = last.substring(0, ldIndex).replace(/\r/g, ONE_CHAR_STRING).replace(/\n/g, ONE_CHAR_STRING).replace(/\t/g, ONE_CHAR_STRING);
-                    stack.push("_ts(\"" + token + "\")");
+                    // stack.push("_ts(\"" + token + "\")");
+                    stack.push("_ts('" + token + "')");
                     last = advance(last, ldIndex);
                     ldIndex = last.indexOf(leftDelimiter);
                     rdIndex = last.indexOf(rightDelimiter);
@@ -1653,7 +1654,8 @@
                 } else {
                     // last = last.trim();
                     last = last.replace(/\r/g, ONE_CHAR_STRING).replace(/\n/g, ONE_CHAR_STRING).replace(/\t/g, ONE_CHAR_STRING);
-                    stack.push("_ts(\"" + last + "\")");
+                    // stack.push("_ts(\"" + last + "\")");
+                    stack.push("_ts('" + last + "')");
                     last = advance(last, last.length);
                 }
                 ldIndex = rdIndex = -1;
@@ -1825,7 +1827,7 @@
             warn("The pollQueue'length more than the maxPolllength of pollQueue, now.");
         }
 
-        if (!isUndefined(Promise) && isNative(Promise)) {          
+        if (typeof Promise !== "undefined" && isNative(Promise)) {          
             var promise = Promise.resolve();
             asyncFn = function () {
                 promise.then(nextPollHandler, error).catch(error);
