@@ -1632,7 +1632,7 @@
                 rdIndex = last.indexOf(rightDelimiter);
                 if (ldIndex !== -1 && rdIndex !== -1) {
                     // var token = last.substring(0, ldIndex).trim();
-                    var token = last.substring(0, ldIndex).replace(/\r/g, ONE_CHAR_STRING).replace(/\n/g, ONE_CHAR_STRING).replace(/\t/g, ONE_CHAR_STRING).replace(/\'/g, "\\'").replace(/\\/g, "\\\\");
+                    var token = last.substring(0, ldIndex).replace(/\r/g, ONE_CHAR_STRING).replace(/\n/g, ONE_CHAR_STRING).replace(/\t/g, ONE_CHAR_STRING).replace(/\\/g, "\\\\").replace(/\'/g, "\\'");
                     // stack.push("_ts(\"" + token + "\")");
                     stack.push("_ts('" + token + "')");
                     last = advance(last, ldIndex);
@@ -1653,7 +1653,7 @@
                     last = advance(last, rdIndex + rightDelimiter.length);
                 } else {
                     // last = last.trim();
-                    last = last.replace(/\r/g, ONE_CHAR_STRING).replace(/\n/g, ONE_CHAR_STRING).replace(/\t/g, ONE_CHAR_STRING).replace(/\'/g, "\\'").replace(/\\/g, "\\\\");
+                    last = last.replace(/\r/g, ONE_CHAR_STRING).replace(/\n/g, ONE_CHAR_STRING).replace(/\t/g, ONE_CHAR_STRING).replace(/\\/g, "\\\\").replace(/\'/g, "\\'");
                     // stack.push("_ts(\"" + last + "\")");
                     stack.push("_ts('" + last + "')");
                     last = advance(last, last.length);
