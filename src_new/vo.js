@@ -524,7 +524,7 @@
             var config = this.monitorConfig;
             if (isObject(config)) {
                 if (isFunction(config.fn)) {
-                    if (config.async === false) {
+                    if (!config.async) {
                         config.fn.call(vo, vo.$responseGetterProxy(config.monitorName));
                     } else {
                         var cb = $bind(config.fn, vo, vo.$responseGetterProxy(config.monitorName));
@@ -2080,6 +2080,7 @@
             monitorConfig.monitorName = monitorName;
         } else if (isFunction(monitorConfig)) {
             monitorConfig = {
+                "async": true,
                 "fn": monitorConfig,
                 "monitorName": monitorName
             }
